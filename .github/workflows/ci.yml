@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 11.0.x
+      - run: dotnet build Reeve.Pipeline.slnx -c Release
+      - run: dotnet pack src/Reeve.Pipeline -c Release -o artifacts/nupkg --no-build
+      - run: dotnet test tests/Reeve.Pipeline.Tests -c Release --no-build

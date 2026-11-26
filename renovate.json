@@ -1,0 +1,51 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":semanticCommits",
+    ":separateMultipleMajorReleases"
+  ],
+  "dependencyDashboard": false,
+  "enabledManagers": [
+    "nuget",
+    "github-actions"
+  ],
+  "packageRules": [
+    {
+      "description": "One pull request per run for the .NET stack instead of one per package.",
+      "matchManagers": [
+        "nuget"
+      ],
+      "groupName": ".NET dependencies"
+    },
+    {
+      "description": "GitHub Actions versions land in one pull request.",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "groupName": "GitHub Actions"
+    },
+    {
+      "description": "Major versions of the .NET release train are bumped by hand together with the target framework.",
+      "matchPackageNames": [
+        "Microsoft.Extensions.*"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "The .NET SDK major in the workflows moves by hand together with the target framework.",
+      "matchDatasources": [
+        "dotnet-version"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "enabled": false
+    }
+  ],
+  "prConcurrentLimit": 3,
+  "prHourlyLimit": 2
+}

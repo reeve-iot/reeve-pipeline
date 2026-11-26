@@ -1,0 +1,41 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 11.0.x
+      - run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+      - run: dotnet build Reeve.Pipeline.slnx -c Release /p:Version=$VERSION
+      - run: dotnet pack src/Reeve.Pipeline -c Release -o artifacts/nupkg --no-build /p:Version=$VERSION
+      - run: dotnet test tests/Reeve.Pipeline.Tests -c Release --no-build
+      - name: Extract the release notes
+        run: |
+          awk -v v="$VERSION" '$0 ~ "^## " { if (found) exit; found = index($0, "## " v " ") == 1; next } found' \
+            CHANGELOG.md > release-notes.md
+          grep -q '[^[:space:]]' release-notes.md
+      - uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ vars.NUGET_USER }}
+      - run: >
+          dotnet nuget push "artifacts/nupkg/*.nupkg"
+          --api-key "${{ steps.login.outputs.NUGET_API_KEY }}"
+          --source https://api.nuget.org/v3/index.json
+      - name: Create the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --title "Reeve.Pipeline $VERSION" --notes-file release-notes.md

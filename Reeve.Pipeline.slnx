@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Reeve.Pipeline/Reeve.Pipeline.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Reeve.Pipeline.Tests/Reeve.Pipeline.Tests.csproj" />
+  </Folder>
+</Solution>

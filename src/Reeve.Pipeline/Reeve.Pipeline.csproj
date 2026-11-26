@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageId>Reeve.Pipeline</PackageId>
+    <Description>A pipeline of stages with Up/Down compensation. No persistence, no scheduler, no dependency injection: the caller ticks it and stores the journal it hands back.</Description>
+    <PackageTags>pipeline;saga;compensation;routing-slip;state-machine</PackageTags>
+  </PropertyGroup>
+
+</Project>
